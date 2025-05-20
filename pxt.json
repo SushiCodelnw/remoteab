@@ -1,10 +1,11 @@
 {
-    "name": "RemoteAB",
+    "name": "RemoteAB - Template",
     "description": "",
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "joystickbit": "github:tinkertanker/pxt-joystickbit#v1.0.4"
     },
     "files": [
         "main.blocks",

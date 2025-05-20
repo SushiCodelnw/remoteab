@@ -1,58 +1,48 @@
-input.onButtonPressed(Button.A, function () {
-    Set = 1
-    basic.showIcon(IconNames.Square)
+joystickbit.onButtonEvent(joystickbit.JoystickBitPin.P14, joystickbit.ButtonType.down, function () {
+    contol = "Move"
+    basic.showIcon(IconNames.Rollerskate)
 })
-input.onButtonPressed(Button.B, function () {
-    Set = 0
-    basic.showIcon(IconNames.Triangle)
+joystickbit.onButtonEvent(joystickbit.JoystickBitPin.P13, joystickbit.ButtonType.down, function () {
+    contol = "Arm"
+    basic.showIcon(IconNames.Sword)
 })
-let lastCommand = ""
 let command = ""
-let Y = 0
-let X = 0
-let Set = 0
+let contol = ""
+contol = "Move"
 radio.setGroup(1)
+joystickbit.initJoystickBit()
 basic.forever(function () {
-    X = input.rotation(Rotation.Roll)
-    Y = input.rotation(Rotation.Pitch)
-    if (Set == 0) {
-        if (Y < -30) {
+    if (joystickbit.getRockerValue(joystickbit.rockerType.X) < 200) {
+        basic.showArrow(ArrowNames.North)
+        if (contol == "Move") {
             command = "Forward"
-            basic.showArrow(ArrowNames.North)
-        } else if (Y > 30) {
-            command = "Forback"
-            basic.showArrow(ArrowNames.South)
-        } else if (X < -30) {
-            command = "Left"
-            basic.showArrow(ArrowNames.West)
-        } else if (X > 30) {
-            command = "Right"
-            basic.showArrow(ArrowNames.East)
         } else {
-            command = "Stop"
-            basic.clearScreen()
+            command = "ArmUp"
+        }
+    } else if (joystickbit.getRockerValue(joystickbit.rockerType.X) > 800) {
+        basic.showArrow(ArrowNames.South)
+        if (contol == "Move") {
+            command = "Forback"
+        } else {
+            command = "ArmDown"
+        }
+    } else if (joystickbit.getRockerValue(joystickbit.rockerType.Y) > 800) {
+        basic.showArrow(ArrowNames.West)
+        if (contol == "Move") {
+            command = "Left"
+        } else {
+            command = "HandUp"
+        }
+    } else if (joystickbit.getRockerValue(joystickbit.rockerType.Y) < 200) {
+        basic.showArrow(ArrowNames.East)
+        if (contol == "Move") {
+            command = "Right"
+        } else {
+            command = "HandDown"
         }
     } else {
-        if (Y < -30) {
-            command = "ArmUp"
-            basic.showArrow(ArrowNames.North)
-        } else if (Y > 30) {
-            command = "ArmDown"
-            basic.showArrow(ArrowNames.South)
-        } else if (X < -30) {
-            command = "HandUp"
-            basic.showArrow(ArrowNames.West)
-        } else if (X > 30) {
-            command = "HandDown"
-            basic.showArrow(ArrowNames.East)
-        } else {
-            command = "Stop"
-            basic.clearScreen()
-        }
+        command = "Stop"
+        basic.clearScreen()
     }
-    if (command != lastCommand) {
-        radio.sendValue(command, control.deviceSerialNumber())
-        lastCommand = command
-    }
-    basic.pause(100)
+    radio.sendValue(command, control.deviceSerialNumber())
 })
